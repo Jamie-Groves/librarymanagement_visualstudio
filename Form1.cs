@@ -30,7 +30,7 @@ namespace WindowsFormsApp1
         //Connect to the mySQL database
         private void InitializeDatabaseConnection()
         {
-            string myConnectionString = "server=localhost;uid=root;pwd=hd9T7K5Se1KK4kIO;database=library_database";
+            string myConnectionString = "server=localhost;uid=root;pwd=root;database=library_database";
 
             try
             {
@@ -631,5 +631,40 @@ namespace WindowsFormsApp1
         {
 
         }
-    }
+
+		private void ScanButton_Click(object sender, EventArgs e)
+		{
+			 try
+			{
+				using (OpenFileDialog dlg = new OpenFileDialog())
+				{
+					dlg.Filter = "PNG files|*.png|All images|*.jpg;*.bmp;*.png";
+					dlg.Title = "Select an ISBN‑13 barcode image";
+
+					if (dlg.ShowDialog() != DialogResult.OK)
+						return;
+
+					// Instantiate and call your BarcodeScanner
+					BarcodeScanner scanner = new BarcodeScanner();
+					string isbn = scanner.Scan(dlg.FileName);
+
+					MessageBox.Show(
+						"Scanned ISBN: " + isbn,
+						"Success",
+						MessageBoxButtons.OK,
+						MessageBoxIcon.Information
+					);
+				}
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					"Error: " + ex.Message,
+					"Scan Failed",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error
+				);
+			}
+		}
+	}
 }
