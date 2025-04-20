@@ -13,6 +13,7 @@ using System.Net;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace WindowsFormsApp1
 {
@@ -30,7 +31,7 @@ namespace WindowsFormsApp1
         //Connect to the mySQL database
         private void InitializeDatabaseConnection()
         {
-            string myConnectionString = "server=localhost;uid=root;pwd=root;database=library_database";
+            string myConnectionString = "server=localhost;uid=root;pwd=hd9T7K5Se1KK4kIO;database=library_database";
 
             try
             {
@@ -170,10 +171,27 @@ namespace WindowsFormsApp1
                             }
 
                             // Extract genre (subject)
+                            // Extract genre (mainstream only)
                             if (workDetails["subjects"] != null)
                             {
-                                genre = string.Join(", ", workDetails["subjects"].Select(s => s.ToString()));
+                                var allowedGenres = new List<string>
+                                    {
+                                        "fiction", "non-fiction", "science fiction", "fantasy", "horror", "romance",
+                                        "mystery", "historical", "biography", "poetry", "thriller", "children",
+                                        "young adult", "classics", "drama", "adventure"
+                                    };
+
+                                var rawSubjects = workDetails["subjects"]
+                                    .Select(s => s.ToString().ToLowerInvariant().Trim());
+
+                                var matchingGenres = allowedGenres
+                                    .Where(g => rawSubjects.Any(s => s.Contains(g)))
+                                    .Distinct()
+                                    .ToList();
+
+                                genre = matchingGenres.Count > 0 ? string.Join(", ", matchingGenres) : "Unknown";
                             }
+
                         }
 
                         // Update UI elements
@@ -666,5 +684,89 @@ namespace WindowsFormsApp1
 				);
 			}
 		}
-	}
+
+        private void search_button_Click(object sender, EventArgs e)
+        {
+            string query = @"
+        SELECT * 
+        FROM books
+        WHERE  title LIKE @searchText";
+            try
+            {
+                using (MySqlCommand cmd = new MySqlCommand(query, myConnection))
+                {
+                    cmd.Parameters.AddWithValue("@searchText", "%" + titlesearch_tb.Text + "%");
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        books_listbox.Items.Clear(); // Clear previous entries
+                        while (reader.Read())
+                        {
+                            string bookTitle = reader.GetString("title");
+                            books_listbox.Items.Add(bookTitle); // Add book title to ListBox
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error searching for books: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void loadall_btn_Click(object sender, EventArgs e)
+        {
+            LoadBookTitles(); // Reload all book titles
+        }
+
+        private void exportoverdue_btn_Click(object sender, EventArgs e)
+        {
+            string query = @"
+                SELECT books.title, users.username, checked_out.checkout_date 
+                FROM checked_out
+                INNER JOIN books ON checked_out.book_id = books.id
+                INNER JOIN users ON checked_out.user_id = users.user_id
+                WHERE DATEDIFF(NOW(), checked_out.checkout_date) > 14";
+
+            try
+            {
+                using (MySqlCommand cmd = new MySqlCommand(query, myConnection))
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (!reader.HasRows)
+                    {
+                        MessageBox.Show("No overdue books to export.");
+                        return;
+                    }
+
+                    SaveFileDialog saveDialog = new SaveFileDialog();
+                    saveDialog.Filter = "CSV files (*.csv)|*.csv";
+                    saveDialog.FileName = "OverdueBooks.csv";
+
+                    if (saveDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        using (StreamWriter writer = new StreamWriter(saveDialog.FileName, false, Encoding.UTF8))
+                        {
+                            writer.WriteLine("Title,Username,Checkout Date");
+
+                            while (reader.Read())
+                            {
+                                string bookTitle = reader.GetString("title").Replace(",", " ");
+                                string borrower = reader.GetString("username").Replace(",", " ");
+                                string checkoutDate = reader.GetDateTime("checkout_date").ToString("yyyy-MM-dd");
+
+                                writer.WriteLine($"{bookTitle},{borrower},{checkoutDate}");
+                            }
+                        }
+
+                        MessageBox.Show("Overdue books exported successfully!", "Export Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error exporting overdue books: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+    }
 }
