@@ -56,12 +56,15 @@
             this.email_tb = new System.Windows.Forms.TextBox();
             this.members_listbox = new System.Windows.Forms.ListBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.check_btn = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.barcodecover_pb = new System.Windows.Forms.PictureBox();
+            this.barcodetitle_tb = new System.Windows.Forms.TextBox();
             this.ScanButton = new System.Windows.Forms.Button();
             this.printDialog1 = new System.Windows.Forms.PrintDialog();
-            this.barcodetitle_tb = new System.Windows.Forms.TextBox();
-            this.barcodecover_pb = new System.Windows.Forms.PictureBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.check_btn = new System.Windows.Forms.Button();
+            this.barcode_checkout_btn = new System.Windows.Forms.Button();
+            this.username_tb = new System.Windows.Forms.TextBox();
+            this.username_lbl = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.bookCover_picturebox)).BeginInit();
             this.library_tabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -345,6 +348,9 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.username_lbl);
+            this.tabPage3.Controls.Add(this.username_tb);
+            this.tabPage3.Controls.Add(this.barcode_checkout_btn);
             this.tabPage3.Controls.Add(this.check_btn);
             this.tabPage3.Controls.Add(this.label4);
             this.tabPage3.Controls.Add(this.barcodecover_pb);
@@ -357,6 +363,40 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Barcode Scanner";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // check_btn
+            // 
+            this.check_btn.Location = new System.Drawing.Point(67, 90);
+            this.check_btn.Name = "check_btn";
+            this.check_btn.Size = new System.Drawing.Size(75, 35);
+            this.check_btn.TabIndex = 4;
+            this.check_btn.Text = "Check";
+            this.check_btn.UseVisualStyleBackColor = true;
+            this.check_btn.Click += new System.EventHandler(this.check_btn_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(24, 66);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(159, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Does the library have this book?";
+            // 
+            // barcodecover_pb
+            // 
+            this.barcodecover_pb.Location = new System.Drawing.Point(259, 16);
+            this.barcodecover_pb.Name = "barcodecover_pb";
+            this.barcodecover_pb.Size = new System.Drawing.Size(220, 257);
+            this.barcodecover_pb.TabIndex = 2;
+            this.barcodecover_pb.TabStop = false;
+            // 
+            // barcodetitle_tb
+            // 
+            this.barcodetitle_tb.Location = new System.Drawing.Point(259, 285);
+            this.barcodetitle_tb.Name = "barcodetitle_tb";
+            this.barcodetitle_tb.Size = new System.Drawing.Size(221, 20);
+            this.barcodetitle_tb.TabIndex = 1;
             // 
             // ScanButton
             // 
@@ -373,39 +413,31 @@
             // 
             this.printDialog1.UseEXDialog = true;
             // 
-            // barcodetitle_tb
+            // barcode_checkout_btn
             // 
-            this.barcodetitle_tb.Location = new System.Drawing.Point(259, 285);
-            this.barcodetitle_tb.Name = "barcodetitle_tb";
-            this.barcodetitle_tb.Size = new System.Drawing.Size(221, 20);
-            this.barcodetitle_tb.TabIndex = 1;
+            this.barcode_checkout_btn.Location = new System.Drawing.Point(682, 142);
+            this.barcode_checkout_btn.Name = "barcode_checkout_btn";
+            this.barcode_checkout_btn.Size = new System.Drawing.Size(89, 25);
+            this.barcode_checkout_btn.TabIndex = 5;
+            this.barcode_checkout_btn.Text = "Check Out";
+            this.barcode_checkout_btn.UseVisualStyleBackColor = true;
+            this.barcode_checkout_btn.Click += new System.EventHandler(this.barcode_checkout_btn_Click);
             // 
-            // barcodecover_pb
+            // username_tb
             // 
-            this.barcodecover_pb.Location = new System.Drawing.Point(259, 16);
-            this.barcodecover_pb.Name = "barcodecover_pb";
-            this.barcodecover_pb.Size = new System.Drawing.Size(220, 257);
-            this.barcodecover_pb.TabIndex = 2;
-            this.barcodecover_pb.TabStop = false;
+            this.username_tb.Location = new System.Drawing.Point(515, 145);
+            this.username_tb.Name = "username_tb";
+            this.username_tb.Size = new System.Drawing.Size(161, 20);
+            this.username_tb.TabIndex = 6;
             // 
-            // label4
+            // username_lbl
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 66);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(159, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Does the library have this book?";
-            // 
-            // check_btn
-            // 
-            this.check_btn.Location = new System.Drawing.Point(67, 90);
-            this.check_btn.Name = "check_btn";
-            this.check_btn.Size = new System.Drawing.Size(75, 35);
-            this.check_btn.TabIndex = 4;
-            this.check_btn.Text = "Check";
-            this.check_btn.UseVisualStyleBackColor = true;
-            this.check_btn.Click += new System.EventHandler(this.check_btn_Click);
+            this.username_lbl.AutoSize = true;
+            this.username_lbl.Location = new System.Drawing.Point(537, 116);
+            this.username_lbl.Name = "username_lbl";
+            this.username_lbl.Size = new System.Drawing.Size(107, 26);
+            this.username_lbl.TabIndex = 7;
+            this.username_lbl.Text = "Enter your username \r\nto checkout";
             // 
             // Form1
             // 
@@ -468,6 +500,9 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.PictureBox barcodecover_pb;
         private System.Windows.Forms.TextBox barcodetitle_tb;
+        private System.Windows.Forms.Label username_lbl;
+        private System.Windows.Forms.TextBox username_tb;
+        private System.Windows.Forms.Button barcode_checkout_btn;
     }
 }
 

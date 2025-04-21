@@ -832,5 +832,111 @@ namespace WindowsFormsApp1
                 MessageBox.Show("Error checking book availability: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void barcode_checkout_btn_Click(object sender, EventArgs e)
+        {
+            string selectedBook = barcodetitle_tb.Text.Trim();
+            string selectedUser = username_tb.Text.Trim();
+
+            if (string.IsNullOrEmpty(selectedBook))
+            {
+                MessageBox.Show("Please scan a book to check out.", "No Book Title", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(selectedUser))
+            {
+                MessageBox.Show("Please enter a username.", "No User Provided", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Step 1: Get book_id
+            string getBookIdQuery = "SELECT id FROM books WHERE title = @title";
+            int bookId = -1;
+
+            try
+            {
+                using (MySqlCommand cmd = new MySqlCommand(getBookIdQuery, myConnection))
+                {
+                    cmd.Parameters.AddWithValue("@title", selectedBook);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            bookId = reader.GetInt32("id");
+                        }
+                    }
+                }
+
+                if (bookId == -1)
+                {
+                    MessageBox.Show("Book not found in the database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving book ID: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Step 2: Get user_id
+            string getUserIdQuery = "SELECT user_id FROM users WHERE username = @username";
+            int userId = -1;
+
+            try
+            {
+                using (MySqlCommand cmd = new MySqlCommand(getUserIdQuery, myConnection))
+                {
+                    cmd.Parameters.AddWithValue("@username", selectedUser);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            userId = reader.GetInt32("user_id");
+                        }
+                    }
+                }
+
+                if (userId == -1)
+                {
+                    MessageBox.Show("User not found in the database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving user ID: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Step 3: Checkout
+            string checkoutQuery = "INSERT INTO checked_out (user_id, book_id, checkout_date) VALUES (@userId, @bookId, NOW())";
+
+            try
+            {
+                using (MySqlCommand cmd = new MySqlCommand(checkoutQuery, myConnection))
+                {
+                    cmd.Parameters.AddWithValue("@userId", userId);
+                    cmd.Parameters.AddWithValue("@bookId", bookId);
+
+                    int rowsAffected = cmd.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        MessageBox.Show($"'{selectedBook}' has been checked out to {selectedUser}.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Book checkout failed.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error checking out book: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
     }
 }
