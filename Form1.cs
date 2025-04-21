@@ -650,40 +650,75 @@ namespace WindowsFormsApp1
 
         }
 
-		private void ScanButton_Click(object sender, EventArgs e)
-		{
-			 try
-			{
-				using (OpenFileDialog dlg = new OpenFileDialog())
-				{
-					dlg.Filter = "PNG files|*.png|All images|*.jpg;*.bmp;*.png";
-					dlg.Title = "Select an ISBN‑13 barcode image";
+        private async void ScanButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (OpenFileDialog dlg = new OpenFileDialog())
+                {
+                    dlg.Filter = "PNG files|*.png|All images|*.jpg;*.bmp;*.png";
+                    dlg.Title = "Select an ISBN‑13 barcode image";
 
-					if (dlg.ShowDialog() != DialogResult.OK)
-						return;
+                    if (dlg.ShowDialog() != DialogResult.OK)
+                        return;
 
-					// Instantiate and call your BarcodeScanner
-					BarcodeScanner scanner = new BarcodeScanner();
-					string isbn = scanner.Scan(dlg.FileName);
+                    // Scan ISBN from image
+                    BarcodeScanner scanner = new BarcodeScanner();
+                    string isbn = scanner.Scan(dlg.FileName);
 
-					MessageBox.Show(
-						"Scanned ISBN: " + isbn,
-						"Success",
-						MessageBoxButtons.OK,
-						MessageBoxIcon.Information
-					);
-				}
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show(
-					"Error: " + ex.Message,
-					"Scan Failed",
-					MessageBoxButtons.OK,
-					MessageBoxIcon.Error
-				);
-			}
-		}
+                    if (string.IsNullOrWhiteSpace(isbn))
+                    {
+                        MessageBox.Show("No ISBN detected.", "Scan Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Call Open Library API with scanned ISBN
+                    string apiUrl = $"https://openlibrary.org/isbn/{isbn}.json";
+                    using (HttpClient client = new HttpClient())
+                    {
+                        HttpResponseMessage response = await client.GetAsync(apiUrl);
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            MessageBox.Show("Book not found with scanned ISBN.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+
+                        string json = await response.Content.ReadAsStringAsync();
+                        JObject bookData = JObject.Parse(json);
+
+                        string title = bookData["title"]?.ToString() ?? "Unknown Title";
+                        barcodetitle_tb.Text = title;
+
+                        // Get cover ID if available
+                        if (bookData["covers"] != null && bookData["covers"].Any())
+                        {
+                            int coverId = bookData["covers"][0].ToObject<int>();
+                            string coverUrl = $"https://covers.openlibrary.org/b/id/{coverId}-L.jpg";
+
+                            using (WebClient webClient = new WebClient())
+                            {
+                                byte[] imageData = await webClient.DownloadDataTaskAsync(coverUrl);
+                                using (MemoryStream ms = new MemoryStream(imageData))
+                                {
+                                    barcodecover_pb.Image = Image.FromStream(ms);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            barcodecover_pb.Image = null; // No cover found
+                        }
+                    }
+
+                    MessageBox.Show("Book information loaded from ISBN!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Scan Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
 
         private void search_button_Click(object sender, EventArgs e)
         {
@@ -768,5 +803,34 @@ namespace WindowsFormsApp1
             }
         }
 
+        private void check_btn_Click(object sender, EventArgs e)
+        {
+            string query = @"
+                            SELECT books.title
+                            FROM books
+                            WHERE books.title = @title";
+            try
+            {
+                using (MySqlCommand cmd = new MySqlCommand(query, myConnection))
+                {
+                    cmd.Parameters.AddWithValue("@title", barcodetitle_tb.Text);
+                    using (MySqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            MessageBox.Show("Book is available in the library.", "Book Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Book not found in the library.", "Not Found", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error checking book availability: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

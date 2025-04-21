@@ -37,12 +37,17 @@
             this.viewCheckedOut_button = new System.Windows.Forms.Button();
             this.library_tabs = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.loadall_btn = new System.Windows.Forms.Button();
+            this.search_lbl = new System.Windows.Forms.Label();
+            this.search_button = new System.Windows.Forms.Button();
+            this.titlesearch_tb = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.checkout_button = new System.Windows.Forms.Button();
             this.member_combobox = new System.Windows.Forms.ComboBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.exportoverdue_btn = new System.Windows.Forms.Button();
             this.overduebooks_btn = new System.Windows.Forms.Button();
             this.checkIn_button = new System.Windows.Forms.Button();
             this.loadcheckedout_button = new System.Windows.Forms.Button();
@@ -53,16 +58,16 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.ScanButton = new System.Windows.Forms.Button();
             this.printDialog1 = new System.Windows.Forms.PrintDialog();
-            this.titlesearch_tb = new System.Windows.Forms.TextBox();
-            this.search_button = new System.Windows.Forms.Button();
-            this.search_lbl = new System.Windows.Forms.Label();
-            this.loadall_btn = new System.Windows.Forms.Button();
-            this.exportoverdue_btn = new System.Windows.Forms.Button();
+            this.barcodetitle_tb = new System.Windows.Forms.TextBox();
+            this.barcodecover_pb = new System.Windows.Forms.PictureBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.check_btn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.bookCover_picturebox)).BeginInit();
             this.library_tabs.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.barcodecover_pb)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -160,11 +165,47 @@
             this.tabPage1.Controls.Add(this.genre_tb);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(790, 418);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Book List";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // loadall_btn
+            // 
+            this.loadall_btn.Location = new System.Drawing.Point(445, 13);
+            this.loadall_btn.Name = "loadall_btn";
+            this.loadall_btn.Size = new System.Drawing.Size(94, 19);
+            this.loadall_btn.TabIndex = 18;
+            this.loadall_btn.Text = "Load All Books";
+            this.loadall_btn.UseVisualStyleBackColor = true;
+            this.loadall_btn.Click += new System.EventHandler(this.loadall_btn_Click);
+            // 
+            // search_lbl
+            // 
+            this.search_lbl.AutoSize = true;
+            this.search_lbl.Location = new System.Drawing.Point(70, 17);
+            this.search_lbl.Name = "search_lbl";
+            this.search_lbl.Size = new System.Drawing.Size(91, 13);
+            this.search_lbl.TabIndex = 17;
+            this.search_lbl.Text = "Search for a Title:";
+            // 
+            // search_button
+            // 
+            this.search_button.Location = new System.Drawing.Point(385, 13);
+            this.search_button.Name = "search_button";
+            this.search_button.Size = new System.Drawing.Size(54, 20);
+            this.search_button.TabIndex = 16;
+            this.search_button.Text = "Search";
+            this.search_button.UseVisualStyleBackColor = true;
+            this.search_button.Click += new System.EventHandler(this.search_button_Click);
+            // 
+            // titlesearch_tb
+            // 
+            this.titlesearch_tb.Location = new System.Drawing.Point(167, 13);
+            this.titlesearch_tb.Name = "titlesearch_tb";
+            this.titlesearch_tb.Size = new System.Drawing.Size(212, 20);
+            this.titlesearch_tb.TabIndex = 15;
             // 
             // label3
             // 
@@ -223,11 +264,21 @@
             this.tabPage2.Controls.Add(this.members_listbox);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(790, 418);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Members";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // exportoverdue_btn
+            // 
+            this.exportoverdue_btn.Location = new System.Drawing.Point(334, 182);
+            this.exportoverdue_btn.Name = "exportoverdue_btn";
+            this.exportoverdue_btn.Size = new System.Drawing.Size(144, 31);
+            this.exportoverdue_btn.TabIndex = 12;
+            this.exportoverdue_btn.Text = "Export Overdue Books";
+            this.exportoverdue_btn.UseVisualStyleBackColor = true;
+            this.exportoverdue_btn.Click += new System.EventHandler(this.exportoverdue_btn_Click);
             // 
             // overduebooks_btn
             // 
@@ -294,9 +345,13 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.check_btn);
+            this.tabPage3.Controls.Add(this.label4);
+            this.tabPage3.Controls.Add(this.barcodecover_pb);
+            this.tabPage3.Controls.Add(this.barcodetitle_tb);
             this.tabPage3.Controls.Add(this.ScanButton);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tabPage3.Margin = new System.Windows.Forms.Padding(2);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Size = new System.Drawing.Size(790, 418);
             this.tabPage3.TabIndex = 2;
@@ -306,7 +361,7 @@
             // ScanButton
             // 
             this.ScanButton.Location = new System.Drawing.Point(316, 327);
-            this.ScanButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.ScanButton.Margin = new System.Windows.Forms.Padding(2);
             this.ScanButton.Name = "ScanButton";
             this.ScanButton.Size = new System.Drawing.Size(98, 43);
             this.ScanButton.TabIndex = 0;
@@ -318,51 +373,39 @@
             // 
             this.printDialog1.UseEXDialog = true;
             // 
-            // titlesearch_tb
+            // barcodetitle_tb
             // 
-            this.titlesearch_tb.Location = new System.Drawing.Point(167, 13);
-            this.titlesearch_tb.Name = "titlesearch_tb";
-            this.titlesearch_tb.Size = new System.Drawing.Size(212, 20);
-            this.titlesearch_tb.TabIndex = 15;
+            this.barcodetitle_tb.Location = new System.Drawing.Point(259, 285);
+            this.barcodetitle_tb.Name = "barcodetitle_tb";
+            this.barcodetitle_tb.Size = new System.Drawing.Size(221, 20);
+            this.barcodetitle_tb.TabIndex = 1;
             // 
-            // search_button
+            // barcodecover_pb
             // 
-            this.search_button.Location = new System.Drawing.Point(385, 13);
-            this.search_button.Name = "search_button";
-            this.search_button.Size = new System.Drawing.Size(54, 20);
-            this.search_button.TabIndex = 16;
-            this.search_button.Text = "Search";
-            this.search_button.UseVisualStyleBackColor = true;
-            this.search_button.Click += new System.EventHandler(this.search_button_Click);
+            this.barcodecover_pb.Location = new System.Drawing.Point(259, 16);
+            this.barcodecover_pb.Name = "barcodecover_pb";
+            this.barcodecover_pb.Size = new System.Drawing.Size(220, 257);
+            this.barcodecover_pb.TabIndex = 2;
+            this.barcodecover_pb.TabStop = false;
             // 
-            // search_lbl
+            // label4
             // 
-            this.search_lbl.AutoSize = true;
-            this.search_lbl.Location = new System.Drawing.Point(70, 17);
-            this.search_lbl.Name = "search_lbl";
-            this.search_lbl.Size = new System.Drawing.Size(91, 13);
-            this.search_lbl.TabIndex = 17;
-            this.search_lbl.Text = "Search for a Title:";
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(24, 66);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(159, 13);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Does the library have this book?";
             // 
-            // loadall_btn
+            // check_btn
             // 
-            this.loadall_btn.Location = new System.Drawing.Point(445, 13);
-            this.loadall_btn.Name = "loadall_btn";
-            this.loadall_btn.Size = new System.Drawing.Size(94, 19);
-            this.loadall_btn.TabIndex = 18;
-            this.loadall_btn.Text = "Load All Books";
-            this.loadall_btn.UseVisualStyleBackColor = true;
-            this.loadall_btn.Click += new System.EventHandler(this.loadall_btn_Click);
-            // 
-            // exportoverdue_btn
-            // 
-            this.exportoverdue_btn.Location = new System.Drawing.Point(334, 182);
-            this.exportoverdue_btn.Name = "exportoverdue_btn";
-            this.exportoverdue_btn.Size = new System.Drawing.Size(144, 31);
-            this.exportoverdue_btn.TabIndex = 12;
-            this.exportoverdue_btn.Text = "Export Overdue Books";
-            this.exportoverdue_btn.UseVisualStyleBackColor = true;
-            this.exportoverdue_btn.Click += new System.EventHandler(this.exportoverdue_btn_Click);
+            this.check_btn.Location = new System.Drawing.Point(67, 90);
+            this.check_btn.Name = "check_btn";
+            this.check_btn.Size = new System.Drawing.Size(75, 35);
+            this.check_btn.TabIndex = 4;
+            this.check_btn.Text = "Check";
+            this.check_btn.UseVisualStyleBackColor = true;
+            this.check_btn.Click += new System.EventHandler(this.check_btn_Click);
             // 
             // Form1
             // 
@@ -382,6 +425,8 @@
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.barcodecover_pb)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -419,6 +464,10 @@
         private System.Windows.Forms.TextBox titlesearch_tb;
         private System.Windows.Forms.Button loadall_btn;
         private System.Windows.Forms.Button exportoverdue_btn;
+        private System.Windows.Forms.Button check_btn;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.PictureBox barcodecover_pb;
+        private System.Windows.Forms.TextBox barcodetitle_tb;
     }
 }
 
