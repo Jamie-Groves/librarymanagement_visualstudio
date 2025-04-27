@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Disclaimer: Original code was written in Python, and debugging the C# conversion was assisted by A.I.
+// See "q32b-log-barcode.pdf" for details.
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
