@@ -1,5 +1,5 @@
 ﻿// Disclaimer: Original code was written in Python, and debugging the C# conversion was assisted by A.I.
-// See "q32b-log-barcode.pdf" for details.
+// See "gpt-log-barcode.pdf" for details.
 
 using System;
 using System.Collections.Generic;
